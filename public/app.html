@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Application</title>
+  <link href="/styles/globals.css" rel="stylesheet">
+</head>
+<body class="flex items-center justify-center h-screen bg-gray-100">
+  <div class="w-full max-w-2xl">
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      <h2 class="text-2xl font-bold mb-6 text-center">Enter Your Text</h2>
+      <textarea id="text-content" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-64 mb-4"></textarea>
+      <div class="flex items-center justify-between">
+        <button id="save-button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+          Save
+        </button>
+        <button id="logout-button" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+          Logout
+        </button>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.getElementById('save-button').addEventListener('click', async () => {
+      const text = document.getElementById('text-content').value;
+      const response = await fetch('/save-text', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ text })
+      });
+      const result = await response.json();
+      if (result.success) {
+        alert('Text saved successfully!');
+      } else {
+        alert('Failed to save text.');
+      }
+    });
+
+    document.getElementById('logout-button').addEventListener('click', () => {
+      window.location.href = '/logout';
+    });
+
+    window.addEventListener('load', async () => {
+      const response = await fetch('/load-text');
+      const result = await response.json();
+      document.getElementById('text-content').value = result.text;
+    });
+  </script>
+</body>
+</html>
